@@ -22,15 +22,15 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    public Optional<String> login(String username, String password) {
-        return userRepository.findByUsername(username)
+    public Optional<String> login(String walletAddress, String password) {
+        return userRepository.findByWalletAddress(walletAddress)
                 .filter(u -> encoder.matches(password, u.getPassword()))
-                .map(u -> jwtUtil.generateToken(u.getUsername()));
+                .map(u -> jwtUtil.generateToken(u.getWalletAddress()));
     }
 
     public Optional<User> getUserByToken(String token) {
         if (!jwtUtil.validateToken(token)) return Optional.empty();
-        String username = jwtUtil.extractUsername(token);
-        return userRepository.findByUsername(username);
+        String walletAddress = jwtUtil.extractUsername(token);
+        return userRepository.findByWalletAddress(walletAddress);
     }
 }
