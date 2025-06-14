@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant | Land Registry</title>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0d151b',
+                        secondary: '#4c749a',
+                        accent: '#3b82f6',
+                        lightbg: '#f8fafc',
+                        darkbg: '#1e293b'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .chat-container {
+            height: calc(100vh - 80px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            line-height: 1.5;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .user-message {
+            background: linear-gradient(135deg, #0d151b 0%, #1e293b 100%);
+            color: white;
+            border-top-right-radius: 4px;
+            margin-left: auto;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .bot-message {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-top-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #64748b;
+            margin-right: 4px;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .suggested-question {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .suggested-question:hover {
+            background: #f1f5f9;
+            transform: translateY(-2px);
+        }
+
+        .chat-input textarea {
+            resize: none;
+            scrollbar-width: thin;
+        }
+
+        .chat-input textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #bfdbfe;
+        }
+
+        .send-button {
+            transition: all 0.2s ease;
+        }
+
+        .send-button:hover {
+            transform: scale(1.05);
+        }
+
+        .send-button:active {
+            transform: scale(0.95);
+        }
+
+        .message-tools {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .message:hover .message-tools {
+            opacity: 1;
+        }
+
+        .tool-button {
+            transition: all 0.2s ease;
+        }
+
+        .tool-button:hover {
+            background: #f1f5f9;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans">
+<div class="flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center">
+                <svg viewBox="0 0 48 48" class="w-6 h-6 text-primary">
+                    <path d="M6 6H42L36 24L42 42H6L12 24L6 6Z" fill="currentColor"></path>
+                </svg>
+                <h1 class="ml-2 text-xl font-bold text-primary">Land Registry AI Assistant</h1>
+            </div>
+        </div>
+        <div class="flex items-center space-x-6">
+            <a href="admin.html" class="flex items-center text-sm font-medium text-primary hover:text-accent transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+                Back to Dashboard
+            </a>
+            <div class="w-10 h-10 rounded-full bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAYFIPLYkZ5yvxJw2cABeebkp_8r0qrxR45O2ySOS5FeLLiADOunm-GLCNrVq0lviAAmMfLkQi8gKRi_NcTqJk6zaNgIV7V_KR1VbcOJ0_tg5-5lxwaDxAwCvHQKHTwEryqb3rTcEhC9Iwpmak9D6Q4cS4UvBCSNdJnlcc3RJi5kE-E11PxH7hcJ4HoVYUtxaf2W9BNnPM3jzeYxNTM8uSx8BDP82d8qtVCREHvog0epuvqoNBIUIf-_-V3OP3WwztdH-LcTIGsv6Ze')"></div>
+        </div>
+    </header>
+
+    <!-- Main Chat Area -->
+    <main class="flex-1 p-6">
+        <div class="max-w-5xl mx-auto bg-white rounded-xl overflow-hidden chat-container">
+            <!-- Chat Header -->
+            <div class="bg-primary text-white px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-white/10 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="font-semibold text-lg">Land Registry Assistant</h2>
+                        <p class="text-sm text-white/80">Powered by AI technology</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button class="p-2 rounded-full hover:bg-white/10 transition-colors tooltip" data-tooltip="New chat">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                    </button>
+                    <button class="p-2 rounded-full hover:bg-white/10 transition-colors tooltip" data-tooltip="Settings">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Messages Container -->
+            <div class="flex-1 overflow-y-auto p-6 bg-lightbg" id="chatMessages">
+                <!-- Welcome Message -->
+                <div class="mb-8 text-center">
+                    <div class="inline-block p-4 bg-white rounded-lg shadow-sm border border-slate-200 max-w-2xl">
+                        <h3 class="text-lg font-semibold text-primary mb-2">Welcome to Land Registry AI Assistant</h3>
+                        <p class="text-slate-600 mb-4">I can help you with land registry administration, parcel information, user management, and transaction history.</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+                            <div class="suggested-question p-3 bg-white border border-slate-200 rounded-lg text-sm font-medium text-primary hover:border-accent" onclick="sendSuggestedQuestion('Show me parcel 12345 details')">
+                                Show me parcel 12345 details
+                            </div>
+                            <div class="suggested-question p-3 bg-white border border-slate-200 rounded-lg text-sm font-medium text-primary hover:border-accent" onclick="sendSuggestedQuestion('How many users registered this month?')">
+                                How many users registered this month?
+                            </div>
+                            <div class="suggested-question p-3 bg-white border border-slate-200 rounded-lg text-sm font-medium text-primary hover:border-accent" onclick="sendSuggestedQuestion('Recent transactions for user Alex')">
+                                Recent transactions for user Alex
+                            </div>
+                            <div class="suggested-question p-3 bg-white border border-slate-200 rounded-lg text-sm font-medium text-primary hover:border-accent" onclick="sendSuggestedQuestion('Help me verify land ownership')">
+                                Help me verify land ownership
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Initial Bot Message -->
+                <div class="message bot-message mb-4 w-3/4">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 mr-3">
+                            <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white font-semibold">AI</div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium text-primary mb-1">Land Registry Assistant</div>
+                            <div class="text-slate-700">
+                                <p>Hello! I'm your dedicated AI assistant for the Land Registry system. I can help you with:</p>
+                                <ul class="list-disc pl-5 mt-2 space-y-1">
+                                    <li>Land parcel information and ownership details</li>
+                                    <li>User management and account queries</li>
+                                    <li>Transaction history and verification</li>
+                                    <li>System documentation and procedures</li>
+                                </ul>
+                                <p class="mt-2">What would you like assistance with today?</p>
+                            </div>
+                            <div class="text-xs text-slate-500 mt-2">Just now</div>
+                        </div>
+                        <div class="message-tools ml-3 flex space-x-1">
+                            <button class="tool-button p-1 rounded hover:bg-slate-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                </svg>
+                            </button>
+                            <button class="tool-button p-1 rounded hover:bg-slate-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="border-t border-slate-200 bg-white p-4">
+                <form id="chatForm" class="flex items-end space-x-2" onsubmit="sendMessage(); return false;">
+                    <div class="flex-1 relative">
+                            <textarea
+                                    id="userInput"
+                                    rows="1"
+                                    class="chat-input w-full border border-slate-300 rounded-lg pl-4 pr-12 py-3 focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all"
+                                    placeholder="Ask about land parcels, users, or transactions..."
+                                    oninput="autoGrow(this)"
+                            ></textarea>
+                        <button type="button" class="absolute right-3 bottom-3 p-1 text-slate-500 hover:text-accent">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                            </svg>
+                        </button>
+                    </div>
+                    <button type="submit" class="send-button bg-accent text-white p-3 rounded-lg hover:bg-accent/90 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                        </svg>
+                    </button>
+                </form>
+                <p class="text-xs text-slate-500 mt-2 text-center">Land Registry AI Assistant may produce inaccurate information. Verify critical data.</p>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    // Auto-grow textarea
+    function autoGrow(element) {
+        element.style.height = "auto";
+        element.style.height = (element.scrollHeight) + "px";
+    }
+
+    // Send suggested question
+    function sendSuggestedQuestion(question) {
+        document.getElementById('userInput').value = question;
+        sendMessage();
+    }
+
+    // Handle sending messages
+    function sendMessage() {
+        const userInput = document.getElementById('userInput');
+        const chatMessages = document.getElementById('chatMessages');
+
+        const message = userInput.value.trim();
+        if (message === '') return;
+
+        // Add user message
+        const userMessage = document.createElement('div');
+        userMessage.className = 'message user-message mb-4 ml-auto';
+        userMessage.innerHTML = `
+            <div class="flex items-end justify-end">
+                <div class="flex-1 max-w-[85%]">
+                    <div class="bg-primary text-white p-3 rounded-lg inline-block">
+                        ${escapeHtml(message)}
+                        <div class="text-xs text-white/80 mt-1 text-right">${getCurrentTime()}</div>
+                    </div>
+                </div>
+                <div class="flex-shrink-0 ml-2">
+                    <div class="w-8 h-8 rounded-full bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAYFIPLYkZ5yvxJw2cABeebkp_8r0qrxR45O2ySOS5FeLLiADOunm-GLCNrVq0lviAAmMfLkQi8gKRi_NcTqJk6zaNgIV7V_KR1VbcOJ0_tg5-5lxwaDxAwCvHQKHTwEryqb3rTcEhC9Iwpmak9D6Q4cS4UvBCSNdJnlcc3RJi5kE-E11PxH7hcJ4HoVYUtxaf2W9BNnPM3jzeYxNTM8uSx8BDP82d8qtVCREHvog0epuvqoNBIUIf-_-V3OP3WwztdH-LcTIGsv6Ze')"></div>
+                </div>
+            </div>
+        `;
+        chatMessages.appendChild(userMessage);
+
+        // Clear input
+        userInput.value = '';
+        userInput.style.height = 'auto';
+
+        // Scroll to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Show typing indicator
+        const typingIndicator = document.createElement('div');
+        typingIndicator.className = 'message bot-message mb-4 w-3/4';
+        typingIndicator.innerHTML = `
+            <div class="flex items-start">
+                <div class="flex-shrink-0 mr-3">
+                    <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white font-semibold">AI</div>
+                </div>
+                <div class="flex-1">
+                    <div class="font-medium text-primary mb-1">Land Registry Assistant</div>
+                    <div class="typing-indicator flex items-center h-6">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        `;
+        chatMessages.appendChild(typingIndicator);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Simulate bot response (replace with actual API call)
+        setTimeout(() => {
+            // Remove typing indicator
+            chatMessages.removeChild(typingIndicator);
+
+            const botMessage = document.createElement('div');
+            botMessage.className = 'message bot-message mb-4 w-3/4';
+
+            // Generate response based on user input
+            let responseText = generateAIResponse(message);
+
+            botMessage.innerHTML = `
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 mr-3">
+                        <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white font-semibold">AI</div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-medium text-primary mb-1">Land Registry Assistant</div>
+                        <div class="text-slate-700">${responseText}</div>
+                        <div class="text-xs text-slate-500 mt-2">${getCurrentTime()}</div>
+                    </div>
+                    <div class="message-tools ml-3 flex space-x-1">
+                        <button class="tool-button p-1 rounded hover:bg-slate-100" onclick="copyToClipboard(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                            </svg>
+                        </button>
+                        <button class="tool-button p-1 rounded hover:bg-slate-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(botMessage);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 1500 + Math.random() * 1000); // Random delay between 1.5-2.5s
+    }
+
+    // Generate AI response (simulated)
+    function generateAIResponse(message) {
+        message = message.toLowerCase();
+
+        if (message.includes('parcel') || message.includes('land')) {
+            const parcelId = message.match(/\d{5,}/)?.[0] || '12345';
+            return `
+                <p>Here's information for Parcel ID ${parcelId}:</p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li><strong>Owner:</strong> Alex Bennett</li>
+                    <li><strong>Location:</strong> District 7, Block 42</li>
+                    <li><strong>Area:</strong> 1,250 sq.m.</li>
+                    <li><strong>Registration Date:</strong> 15/03/2022</li>
+                </ul>
+                <div class="mt-3 flex space-x-2">
+                    <a href="land.html?id=${parcelId}" class="text-sm px-3 py-1 bg-accent/10 text-accent rounded-full hover:bg-accent/20 transition-colors">View Full Details</a>
+                    <a href="transaction.html?parcel=${parcelId}" class="text-sm px-3 py-1 bg-slate-100 text-slate-700 rounded-full hover:bg-slate-200 transition-colors">Transaction History</a>
+                </div>
+            `;
+        } else if (message.includes('user') || message.includes('account')) {
+            return `
+                <p>For user management, you can:</p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li><a href="user.html" class="text-accent hover:underline">View all users</a></li>
+                    <li>Search for specific user accounts</li>
+                    <li>Manage permissions and roles</li>
+                    <li>Review activity logs</li>
+                </ul>
+                <p class="mt-2">There are currently <strong>5,678</strong> active users in the system.</p>
+            `;
+        } else if (message.includes('transaction') || message.includes('history')) {
+            return `
+                <p>The system has processed <strong>9,012</strong> transactions to date.</p>
+                <p class="mt-2">You can:</p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li><a href="transaction.html" class="text-accent hover:underline">Browse all transactions</a></li>
+                    <li>Filter by date range, parcel ID, or user</li>
+                    <li>Export transaction records</li>
+                    <li>View pending transactions</li>
+                </ul>
+            `;
+        } else if (message.includes('help') || message.includes('support')) {
+            return `
+                <p>I can assist with various land registry tasks. Here are some things you can ask:</p>
+                <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div class="p-2 bg-slate-50 rounded border border-slate-200 text-sm">"Show parcel 67890 details"</div>
+                    <div class="p-2 bg-slate-50 rounded border border-slate-200 text-sm">"How many transactions yesterday?"</div>
+                    <div class="p-2 bg-slate-50 rounded border border-slate-200 text-sm">"Find user with email example@domain.com"</div>
+                    <div class="p-2 bg-slate-50 rounded border border-slate-200 text-sm">"Help with ownership transfer"</div>
+                </div>
+            `;
+        } else {
+            return `
+                <p>I can help with land registry administration. Try asking about:</p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li>Specific land parcels by ID</li>
+                    <li>User accounts and permissions</li>
+                    <li>Transaction records</li>
+                    <li>System procedures and documentation</li>
+                </ul>
+                <p class="mt-2">Or click one of the suggested questions above to get started.</p>
+            `;
+        }
+    }
+
+    // Helper functions
+    function getCurrentTime() {
+        const now = new Date();
+        return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function copyToClipboard(button) {
+        const message = button.closest('.message').querySelector('.text-slate-700').textContent;
+        navigator.clipboard.writeText(message);
+
+        const originalInnerHTML = button.innerHTML;
+        button.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+        `;
+
+        setTimeout(() => {
+            button.innerHTML = originalInnerHTML;
+        }, 2000);
+    }
+
+    // Handle Enter key (but allow Shift+Enter for new lines)
+    document.getElementById('userInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    // Initialize tooltips
+    document.querySelectorAll('[data-tooltip]').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'absolute z-10 px-2 py-1 text-xs text-white bg-slate-800 rounded shadow-lg';
+            tooltip.textContent = el.getAttribute('data-tooltip');
+            tooltip.style.top = `${el.getBoundingClientRect().top - 30}px`;
+            tooltip.style.left = `${el.getBoundingClientRect().left}px`;
+            tooltip.id = 'current-tooltip';
+            document.body.appendChild(tooltip);
+        });
+
+        el.addEventListener('mouseleave', () => {
+            const tooltip = document.getElementById('current-tooltip');
+            if (tooltip) tooltip.remove();
+        });
+    });
+</script>
+</body>
+</html>

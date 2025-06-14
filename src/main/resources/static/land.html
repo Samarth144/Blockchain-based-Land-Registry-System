@@ -1,0 +1,350 @@
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+    />
+
+    <title>Stitch Design</title>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  </head>
+  <body>
+    <div class="relative flex size-full min-h-screen flex-col bg-gray-50 group/design-root overflow-x-hidden" style='font-family: Inter, "Noto Sans", sans-serif;'>
+      <div class="layout-container flex h-full grow flex-col">
+        <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#eaedf1] px-10 py-3">
+          <div class="flex items-center gap-4 text-[#111518]">
+            <div class="size-4">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 6H42L36 24L42 42H6L12 24L6 6Z" fill="currentColor"></path></svg>
+            </div>
+            <h2 class="text-[#111518] text-lg font-bold leading-tight tracking-[-0.015em]">Land Registry Admin</h2>
+          </div>
+          <div class="flex flex-1 justify-end gap-8">
+            <div class="flex items-center gap-9">
+              <a class="text-[#0d151b] text-sm font-medium leading-normal" href="admin.html">System Overview</a>
+              <a class="text-[#0d151b] text-sm font-medium leading-normal" href="land.html">Land Parcel Management</a>
+              <a class="text-[#0d151b] text-sm font-medium leading-normal" href="user.html">User Management</a>
+              <a class="text-[#0d151b] text-sm font-medium leading-normal" href="transaction.html">Transaction History</a>
+              <a class="text-[#0d151b] text-sm font-medium leading-normal" href="setting.html">System Settings</a>
+            </div>
+            <div
+              class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+              style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAYFIPLYkZ5yvxJw2cABeebkp_8r0qrxR45O2ySOS5FeLLiADOunm-GLCNrVq0lviAAmMfLkQi8gKRi_NcTqJk6zaNgIV7V_KR1VbcOJ0_tg5-5lxwaDxAwCvHQKHTwEryqb3rTcEhC9Iwpmak9D6Q4cS4UvBCSNdJnlcc3RJi5kE-E11PxH7hcJ4HoVYUtxaf2W9BNnPM3jzeYxNTM8uSx8BDP82d8qtVCREHvog0epuvqoNBIUIf-_-V3OP3WwztdH-LcTIGsv6Ze");'
+            ></div>
+          </div>
+        </header>
+        <div class="px-40 flex flex-1 justify-center py-5">
+          <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+            <div class="flex flex-wrap justify-between gap-3 p-4">
+              <div class="flex min-w-72 flex-col gap-3">
+                <p class="text-[#111518] tracking-light text-[32px] font-bold leading-tight">Land Parcel Management</p>
+                <p class="text-[#5d7589] text-sm font-normal leading-normal">Manage land parcels, update information, and handle disputes.</p>
+              </div>
+            </div>
+            <div class="px-4 py-3">
+              <label class="flex flex-col min-w-40 h-12 w-full">
+                <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
+                  <div
+                    class="text-[#5d7589] flex border-none bg-[#eaedf1] items-center justify-center pl-4 rounded-l-xl border-r-0"
+                    data-icon="MagnifyingGlass"
+                    data-size="24px"
+                    data-weight="regular"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                      <path
+                        d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <input
+                    placeholder="Search by parcel ID, owner, or location"
+                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#111518] focus:outline-0 focus:ring-0 border-none bg-[#eaedf1] focus:border-none h-full placeholder:text-[#5d7589] px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
+                    value=""
+                  />
+                </div>
+              </label>
+            </div>
+            <div class="flex gap-3 p-3 flex-wrap pr-4">
+              <button class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full bg-[#eaedf1] pl-4 pr-2">
+                <p class="text-[#111518] text-sm font-medium leading-normal">Status</p>
+                <div class="text-[#111518]" data-icon="CaretDown" data-size="20px" data-weight="regular">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                    <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
+                  </svg>
+                </div>
+              </button>
+              <button class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full bg-[#eaedf1] pl-4 pr-2">
+                <p class="text-[#111518] text-sm font-medium leading-normal">Location</p>
+                <div class="text-[#111518]" data-icon="CaretDown" data-size="20px" data-weight="regular">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                    <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
+                  </svg>
+                </div>
+              </button>
+              <button class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full bg-[#eaedf1] pl-4 pr-2">
+                <p class="text-[#111518] text-sm font-medium leading-normal">Owner</p>
+                <div class="text-[#111518]" data-icon="CaretDown" data-size="20px" data-weight="regular">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                    <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
+                  </svg>
+                </div>
+              </button>
+            </div>
+            <div class="px-4 py-3 @container">
+              <div class="flex overflow-hidden rounded-xl border border-[#d5dce2] bg-gray-50">
+                <table class="flex-1">
+                  <thead>
+                    <tr class="bg-gray-50">
+                      <th class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-120 px-4 py-3 text-left text-[#111518] w-[400px] text-sm font-medium leading-normal">
+                        Parcel ID
+                      </th>
+                      <th class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-240 px-4 py-3 text-left text-[#111518] w-[400px] text-sm font-medium leading-normal">
+                        Location
+                      </th>
+                      <th class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-360 px-4 py-3 text-left text-[#111518] w-[400px] text-sm font-medium leading-normal">Owner</th>
+                      <th class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-480 px-4 py-3 text-left text-[#111518] w-60 text-sm font-medium leading-normal">Status</th>
+                      <th class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-600 px-4 py-3 text-left text-[#111518] w-60 text-[#5d7589] text-sm font-medium leading-normal">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="border-t border-t-[#d5dce2]">
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-120 h-[72px] px-4 py-2 w-[400px] text-[#111518] text-sm font-normal leading-normal">LP001</td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-240 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        123 Oak Street, Anytown
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-360 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        Sophia Carter
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-480 h-[72px] px-4 py-2 w-60 text-sm font-normal leading-normal">
+                        <button
+                          class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 px-4 bg-[#eaedf1] text-[#111518] text-sm font-medium leading-normal w-full"
+                        >
+                          <span class="truncate">Registered</span>
+                        </button>
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-600 h-[72px] px-4 py-2 w-60 text-[#5d7589] text-sm font-bold leading-normal tracking-[0.015em]">
+                        View Details
+                      </td>
+                    </tr>
+                    <tr class="border-t border-t-[#d5dce2]">
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-120 h-[72px] px-4 py-2 w-[400px] text-[#111518] text-sm font-normal leading-normal">LP002</td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-240 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        456 Pine Avenue, Anytown
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-360 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        Ethan Walker
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-480 h-[72px] px-4 py-2 w-60 text-sm font-normal leading-normal">
+                        <button
+                          class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 px-4 bg-[#eaedf1] text-[#111518] text-sm font-medium leading-normal w-full"
+                        >
+                          <span class="truncate">Registered</span>
+                        </button>
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-600 h-[72px] px-4 py-2 w-60 text-[#5d7589] text-sm font-bold leading-normal tracking-[0.015em]">
+                        View Details
+                      </td>
+                    </tr>
+                    <tr class="border-t border-t-[#d5dce2]">
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-120 h-[72px] px-4 py-2 w-[400px] text-[#111518] text-sm font-normal leading-normal">LP003</td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-240 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        789 Maple Drive, Anytown
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-360 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        Olivia Hayes
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-480 h-[72px] px-4 py-2 w-60 text-sm font-normal leading-normal">
+                        <button
+                          class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 px-4 bg-[#eaedf1] text-[#111518] text-sm font-medium leading-normal w-full"
+                        >
+                          <span class="truncate">Disputed</span>
+                        </button>
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-600 h-[72px] px-4 py-2 w-60 text-[#5d7589] text-sm font-bold leading-normal tracking-[0.015em]">
+                        View Details
+                      </td>
+                    </tr>
+                    <tr class="border-t border-t-[#d5dce2]">
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-120 h-[72px] px-4 py-2 w-[400px] text-[#111518] text-sm font-normal leading-normal">LP004</td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-240 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        101 Cedar Lane, Anytown
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-360 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        Liam Bennett
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-480 h-[72px] px-4 py-2 w-60 text-sm font-normal leading-normal">
+                        <button
+                          class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 px-4 bg-[#eaedf1] text-[#111518] text-sm font-medium leading-normal w-full"
+                        >
+                          <span class="truncate">Registered</span>
+                        </button>
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-600 h-[72px] px-4 py-2 w-60 text-[#5d7589] text-sm font-bold leading-normal tracking-[0.015em]">
+                        View Details
+                      </td>
+                    </tr>
+                    <tr class="border-t border-t-[#d5dce2]">
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-120 h-[72px] px-4 py-2 w-[400px] text-[#111518] text-sm font-normal leading-normal">LP005</td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-240 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        222 Elm Court, Anytown
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-360 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        Ava Hughes
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-480 h-[72px] px-4 py-2 w-60 text-sm font-normal leading-normal">
+                        <button
+                          class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 px-4 bg-[#eaedf1] text-[#111518] text-sm font-medium leading-normal w-full"
+                        >
+                          <span class="truncate">Registered</span>
+                        </button>
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-600 h-[72px] px-4 py-2 w-60 text-[#5d7589] text-sm font-bold leading-normal tracking-[0.015em]">
+                        View Details
+                      </td>
+                    </tr>
+                    <tr class="border-t border-t-[#d5dce2]">
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-120 h-[72px] px-4 py-2 w-[400px] text-[#111518] text-sm font-normal leading-normal">LP006</td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-240 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        333 Birch Place, Anytown
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-360 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        Noah Foster
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-480 h-[72px] px-4 py-2 w-60 text-sm font-normal leading-normal">
+                        <button
+                          class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 px-4 bg-[#eaedf1] text-[#111518] text-sm font-medium leading-normal w-full"
+                        >
+                          <span class="truncate">Registered</span>
+                        </button>
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-600 h-[72px] px-4 py-2 w-60 text-[#5d7589] text-sm font-bold leading-normal tracking-[0.015em]">
+                        View Details
+                      </td>
+                    </tr>
+                    <tr class="border-t border-t-[#d5dce2]">
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-120 h-[72px] px-4 py-2 w-[400px] text-[#111518] text-sm font-normal leading-normal">LP007</td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-240 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        444 Willow Way, Anytown
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-360 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        Isabella Reed
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-480 h-[72px] px-4 py-2 w-60 text-sm font-normal leading-normal">
+                        <button
+                          class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 px-4 bg-[#eaedf1] text-[#111518] text-sm font-medium leading-normal w-full"
+                        >
+                          <span class="truncate">Registered</span>
+                        </button>
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-600 h-[72px] px-4 py-2 w-60 text-[#5d7589] text-sm font-bold leading-normal tracking-[0.015em]">
+                        View Details
+                      </td>
+                    </tr>
+                    <tr class="border-t border-t-[#d5dce2]">
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-120 h-[72px] px-4 py-2 w-[400px] text-[#111518] text-sm font-normal leading-normal">LP008</td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-240 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        555 Aspen Road, Anytown
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-360 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        Jackson Cole
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-480 h-[72px] px-4 py-2 w-60 text-sm font-normal leading-normal">
+                        <button
+                          class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 px-4 bg-[#eaedf1] text-[#111518] text-sm font-medium leading-normal w-full"
+                        >
+                          <span class="truncate">Registered</span>
+                        </button>
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-600 h-[72px] px-4 py-2 w-60 text-[#5d7589] text-sm font-bold leading-normal tracking-[0.015em]">
+                        View Details
+                      </td>
+                    </tr>
+                    <tr class="border-t border-t-[#d5dce2]">
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-120 h-[72px] px-4 py-2 w-[400px] text-[#111518] text-sm font-normal leading-normal">LP009</td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-240 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        666 Spruce Circle, Anytown
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-360 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        Mia Powell
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-480 h-[72px] px-4 py-2 w-60 text-sm font-normal leading-normal">
+                        <button
+                          class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 px-4 bg-[#eaedf1] text-[#111518] text-sm font-medium leading-normal w-full"
+                        >
+                          <span class="truncate">Registered</span>
+                        </button>
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-600 h-[72px] px-4 py-2 w-60 text-[#5d7589] text-sm font-bold leading-normal tracking-[0.015em]">
+                        View Details
+                      </td>
+                    </tr>
+                    <tr class="border-t border-t-[#d5dce2]">
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-120 h-[72px] px-4 py-2 w-[400px] text-[#111518] text-sm font-normal leading-normal">LP010</td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-240 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        777 Fir Street, Anytown
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-360 h-[72px] px-4 py-2 w-[400px] text-[#5d7589] text-sm font-normal leading-normal">
+                        Lucas Morgan
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-480 h-[72px] px-4 py-2 w-60 text-sm font-normal leading-normal">
+                        <button
+                          class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 px-4 bg-[#eaedf1] text-[#111518] text-sm font-medium leading-normal w-full"
+                        >
+                          <span class="truncate">Registered</span>
+                        </button>
+                      </td>
+                      <td class="table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-600 h-[72px] px-4 py-2 w-60 text-[#5d7589] text-sm font-bold leading-normal tracking-[0.015em]">
+                        View Details
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <style>
+                          @container(max-width:120px){.table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-120{display: none;}}
+                @container(max-width:240px){.table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-240{display: none;}}
+                @container(max-width:360px){.table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-360{display: none;}}
+                @container(max-width:480px){.table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-480{display: none;}}
+                @container(max-width:600px){.table-4ba3f04a-9fca-4a4d-82f0-473169c0f60a-column-600{display: none;}}
+              </style>
+            </div>
+            <div class="flex items-center justify-center p-4">
+              <a href="#" class="flex size-10 items-center justify-center">
+                <div class="text-[#111518]" data-icon="CaretLeft" data-size="18px" data-weight="regular">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" fill="currentColor" viewBox="0 0 256 256">
+                    <path d="M165.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L91.31,128Z"></path>
+                  </svg>
+                </div>
+              </a>
+              <a class="text-sm font-bold leading-normal tracking-[0.015em] flex size-10 items-center justify-center text-[#111518] rounded-full bg-[#eaedf1]" href="#">1</a>
+              <a class="text-sm font-normal leading-normal flex size-10 items-center justify-center text-[#111518] rounded-full" href="#">2</a>
+              <a class="text-sm font-normal leading-normal flex size-10 items-center justify-center text-[#111518] rounded-full" href="#">3</a>
+              <a class="text-sm font-normal leading-normal flex size-10 items-center justify-center text-[#111518] rounded-full" href="#">4</a>
+              <a class="text-sm font-normal leading-normal flex size-10 items-center justify-center text-[#111518] rounded-full" href="#">5</a>
+              <a href="#" class="flex size-10 items-center justify-center">
+                <div class="text-[#111518]" data-icon="CaretRight" data-size="18px" data-weight="regular">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" fill="currentColor" viewBox="0 0 256 256">
+                    <path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path>
+                  </svg>
+                </div>
+              </a>
+            </div>
+            <div class="flex px-4 py-3 justify-end">
+              <button
+                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-[#c9dcec] text-[#111518] text-sm font-bold leading-normal tracking-[0.015em]"
+              >
+                <span class="truncate">Add New Parcel</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

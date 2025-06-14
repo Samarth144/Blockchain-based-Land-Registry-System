@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+  <link
+          rel="stylesheet"
+          as="style"
+          onload="this.rel='stylesheet'"
+          href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+  />
+
+  <title>Admin Dashboard</title>
+  <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <style>
+    .chat-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      background: #0d151b;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 999;
+      transition: all 0.3s ease;
+    }
+
+    .chat-toggle:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+<div class="relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden" style='font-family: Inter, "Noto Sans", sans-serif;'>
+  <div class="layout-container flex h-full grow flex-col">
+    <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf3] px-10 py-3">
+      <div class="flex items-center gap-4 text-[#0d151b]">
+        <div class="size-4">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 6H42L36 24L42 42H6L12 24L6 6Z" fill="currentColor"></path></svg>
+        </div>
+        <h2 class="text-[#0d151b] text-lg font-bold leading-tight tracking-[-0.015em]">Land Registry Admin</h2>
+      </div>
+      <div class="flex flex-1 justify-end gap-8">
+        <div class="flex items-center gap-9">
+          <a class="text-[#0d151b] text-sm font-medium leading-normal" href="admin.html">System Overview</a>
+          <a class="text-[#0d151b] text-sm font-medium leading-normal" href="land.html">Land Parcel Management</a>
+          <a class="text-[#0d151b] text-sm font-medium leading-normal" href="user.html">User Management</a>
+          <a class="text-[#0d151b] text-sm font-medium leading-normal" href="transaction.html">Transaction History</a>
+          <a class="text-[#0d151b] text-sm font-medium leading-normal" href="setting.html">System Settings</a>
+        </div>
+        <div
+                class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAYFIPLYkZ5yvxJw2cABeebkp_8r0qrxR45O2ySOS5FeLLiADOunm-GLCNrVq0lviAAmMfLkQi8gKRi_NcTqJk6zaNgIV7V_KR1VbcOJ0_tg5-5lxwaDxAwCvHQKHTwEryqb3rTcEhC9Iwpmak9D6Q4cS4UvBCSNdJnlcc3RJi5kE-E11PxH7hcJ4HoVYUtxaf2W9BNnPM3jzeYxNTM8uSx8BDP82d8qtVCREHvog0epuvqoNBIUIf-_-V3OP3WwztdH-LcTIGsv6Ze");'
+        ></div>
+      </div>
+    </header>
+    <div class="px-40 flex flex-1 justify-center py-5">
+      <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+        <div class="flex flex-wrap justify-between gap-3 p-4">
+          <div class="flex min-w-72 flex-col gap-3">
+            <p class="text-[#0d151b] tracking-light text-[32px] font-bold leading-tight">System Overview</p>
+            <p class="text-[#4c749a] text-sm font-normal leading-normal">Key metrics and alerts for the blockchain-based land registry system.</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-4 p-4">
+          <div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg p-6 bg-[#e7edf3]">
+            <p class="text-[#0d151b] text-base font-medium leading-normal">Total Land Parcels</p>
+            <p class="text-[#0d151b] tracking-light text-2xl font-bold leading-tight">12,345</p>
+          </div>
+          <div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg p-6 bg-[#e7edf3]">
+            <p class="text-[#0d151b] text-base font-medium leading-normal">Active Users</p>
+            <p class="text-[#0d151b] tracking-light text-2xl font-bold leading-tight">5,678</p>
+          </div>
+          <div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg p-6 bg-[#e7edf3]">
+            <p class="text-[#0d151b] text-base font-medium leading-normal">Transactions Processed</p>
+            <p class="text-[#0d151b] tracking-light text-2xl font-bold leading-tight">9,012</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AI Chat Toggle Button -->
+<a href="ai-chat.html" class="chat-toggle">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+  </svg>
+</a>
+</body>
+</html>
