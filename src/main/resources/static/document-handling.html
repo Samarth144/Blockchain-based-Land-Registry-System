@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Document Handling | Land Registry</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-md-3 col-lg-2 sidebar p-0" id="sidebar-container"></div>
+
+      <!-- Main Content -->
+      <div class="col-md-9 col-lg-10 main-content">
+        <h2 class="mb-4">Document Handling</h2>
+
+        <ul class="nav nav-tabs mb-4" id="documentTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload" type="button" role="tab">Upload Documents</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="manage-tab" data-bs-toggle="tab" data-bs-target="#manage" type="button" role="tab">Manage Documents</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="verify-tab" data-bs-toggle="tab" data-bs-target="#verify" type="button" role="tab">Document Verification</button>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="documentTabsContent">
+          <!-- Upload Tab -->
+          <div class="tab-pane fade show active" id="upload" role="tabpanel">
+            <div class="card module-card">
+              <div class="card-header">
+                <h5 class="mb-0">Upload Document</h5>
+              </div>
+              <div class="card-body">
+                <form id="uploadDocumentForm">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label class="form-label">Document Type</label>
+                        <select class="form-select" name="documentType" required>
+                          <option value="DEED">Deed</option>
+                          <option value="SURVEY">Survey</option>
+                          <option value="TAX_RECEIPT">Tax Receipt</option>
+                          <option value="IDENTITY_PROOF">Identity Proof</option>
+                          <option value="OTHER">Other</option>
+                        </select>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Related Survey Number</label>
+                        <input type="text" class="form-control" name="surveyNumber">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <input type="text" class="form-control" name="description" required>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Document File</label>
+                        <input type="file" class="form-control" name="documentFile" required>
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-upload"></i> Upload to IPFS/Firebase
+                  </button>
+                </form>
+                <div class="response-area mt-3" id="uploadDocumentResponse"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Manage Tab -->
+          <div class="tab-pane fade" id="manage" role="tabpanel">
+            <div class="card module-card">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Document Management</h5>
+                <small id="documentCount">Showing 1–10 of 1,245 documents</small>
+              </div>
+              <div class="card-body">
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <input type="text" class="form-control" placeholder="Search documents..." id="searchInput">
+                  </div>
+                  <div class="col-md-3">
+                    <select class="form-select" id="filterType">
+                      <option value="">All Types</option>
+                      <option value="DEED">Deed</option>
+                      <option value="SURVEY">Survey</option>
+                      <option value="TAX_RECEIPT">Tax Receipt</option>
+                      <option value="IDENTITY_PROOF">Identity Proof</option>
+                    </select>
+                  </div>
+                  <div class="col-md-3">
+                    <button class="btn btn-primary w-100" id="filterBtn">
+                      <i class="fas fa-filter"></i> Filter
+                    </button>
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Document ID</th>
+                        <th>Type</th>
+                        <th>Survey #</th>
+                        <th>Upload Date</th>
+                        <th>Size</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="documentTableBody">
+                      <!-- Document rows dynamically inserted -->
+                    </tbody>
+                  </table>
+                </div>
+
+                <nav aria-label="Document pagination">
+                  <ul class="pagination justify-content-center">
+                    <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <!-- Verify Tab -->
+          <div class="tab-pane fade" id="verify" role="tabpanel">
+            <div class="card module-card">
+              <div class="card-header">
+                <h5 class="mb-0">Document Verification</h5>
+              </div>
+              <div class="card-body">
+                <form id="verifyDocumentForm">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label class="form-label">Document Hash</label>
+                        <input type="text" class="form-control" name="documentHash" required>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label class="form-label">Or Upload Document</label>
+                        <input type="file" class="form-control" name="documentFile">
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check-circle"></i> Verify Document
+                  </button>
+                </form>
+
+                <div class="response-area mt-3" id="verifyDocumentResponse"></div>
+
+                <div class="card mt-4">
+                  <div class="card-header">
+                    <h5 class="mb-0">Verification History</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-hover">
+                        <thead>
+                          <tr>
+                            <th>Date</th>
+                            <th>Document</th>
+                            <th>Status</th>
+                            <th>Blockchain TX</th>
+                          </tr>
+                        </thead>
+                        <tbody id="verificationTableBody">
+                          <!-- Verification history -->
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <nav aria-label="Verification pagination">
+                      <ul class="pagination justify-content-center">
+                        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                      </ul>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> <!-- End of tab-content -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- App Script -->
+  <script src="js/document-handling.js"></script>
+
+  <!-- Sidebar Loader -->
+  <script>
+    fetch("sidebar.html")
+      .then((res) => res.text())
+      .then((html) => document.getElementById("sidebar-container").innerHTML = html)
+      .catch((err) => console.error("Sidebar load failed:", err));
+  </script>
+</body>
+</html>

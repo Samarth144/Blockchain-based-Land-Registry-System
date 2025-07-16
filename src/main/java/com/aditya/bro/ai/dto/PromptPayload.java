@@ -1,13 +1,12 @@
 package com.aditya.bro.ai.dto;
 
+import lombok.Data;
+import java.util.List;
+
+@Data
 public class PromptPayload {
     private String chatPrompt;
-
-    public String getChatPrompt() {
-        return chatPrompt;
-    }
-
-    public void setChatPrompt(String chatPrompt) {
-        this.chatPrompt = chatPrompt;
-    }
+    private String conversationId;  // Optional
+    private String documentType;
+    private List<String> questions;
 }

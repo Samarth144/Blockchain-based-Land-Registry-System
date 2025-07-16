@@ -31,10 +31,10 @@ public class LandService {
         return landRepository.findAll();
     }
 
-    public LandParcel updateDocuments(String surveyNumber, List<String> documentUrls) {
+    public LandParcel addDocument(String surveyNumber, String documentHash) {
         LandParcel land = landRepository.findById(surveyNumber)
                 .orElseThrow(() -> new RuntimeException("Land not found"));
-        land.setDocumentUrls(documentUrls);
+        land.getDocumentHashes().add(documentHash);
         return landRepository.save(land);
     }
 
