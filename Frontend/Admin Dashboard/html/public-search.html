@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Public Search | Land Registry</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-md-3 col-lg-2 sidebar p-0" id="sidebar-container">
+        <!-- Will be loaded dynamically -->
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-md-9 col-lg-10 main-content">
+        <h2 class="mb-4">Public Search Portal</h2>
+
+        <!-- Search Form -->
+        <div class="card module-card mb-4">
+          <div class="card-body">
+            <form id="publicSearchForm">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search by survey number, location, owner name or wallet address..." id="searchInput" />
+                <button class="btn btn-primary" type="submit">
+                  <i class="fas fa-search"></i> Search
+                </button>
+              </div>
+              <div class="form-text mt-2">
+                <a href="#" data-bs-toggle="modal" data-bs-target="#searchHelpModal">Need help with your search?</a>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Search Results -->
+        <div class="card module-card">
+          <div class="card-header d-flex justify-content-between">
+            <h5 class="mb-0">Search Results</h5>
+            <small id="searchResultCount">0 results found</small>
+          </div>
+          <div class="card-body">
+            <div id="noResultsMessage" class="text-center py-5">
+              <i class="fas fa-search fa-3x text-muted mb-3"></i>
+              <h4>No search results yet</h4>
+              <p class="text-muted">Enter your search criteria above to find land records.</p>
+            </div>
+
+            <div id="searchResults" style="display: none;">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Survey #</th>
+                      <th>Location</th>
+                      <th>Current Owner</th>
+                      <th>Area</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="searchResultsTable">
+                    <!-- Results will be loaded here -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Pagination -->
+              <nav aria-label="Search results pagination" id="searchPagination" style="display: none;">
+                <ul class="pagination justify-content-center">
+                  <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                  <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Records -->
+        <div class="card module-card mt-4">
+          <div class="card-header">
+            <h5 class="mb-0">Recent Public Records</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Survey #</th>
+                    <th>Location</th>
+                    <th>Registration Date</th>
+                    <th>Area</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="recentRecordsTable">
+                  <!-- Recent records will be loaded here -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            <nav aria-label="Recent records pagination">
+              <ul class="pagination justify-content-center">
+                <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Help Modal -->
+  <div class="modal fade" id="searchHelpModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Search Help</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h6>How to search for land records:</h6>
+          <ul>
+            <li><strong>By Survey Number:</strong> Enter the full survey number (e.g., "L-2023-4567")</li>
+            <li><strong>By Location:</strong> Enter district, street, or landmark (e.g., "District 12")</li>
+            <li><strong>By Owner:</strong> Enter owner name or wallet address (e.g., "0x3F...2D4E")</li>
+          </ul>
+          <h6 class="mt-3">What information is publicly available?</h6>
+          <p>
+            The public search portal shows basic land information including survey number, location, area, and current owner wallet address. Detailed ownership history and documents are only available to authorized users.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Got it!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/public-search.js"></script>
+  <script>
+    // Load sidebar dynamically (if needed)
+    fetch("sidebar.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("sidebar-container").innerHTML = html;
+      })
+      .catch(err => console.error("Failed to load sidebar:", err));
+  </script>
+</body>
+</html>
