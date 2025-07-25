@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Land Management | OpenAcres</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar placeholder -->
+      <div class="col-md-3 col-lg-2 sidebar p-0" id="sidebar-container"></div>
+
+      <!-- Main Content -->
+      <div class="col-md-9 col-lg-10 main-content">
+        <h2 class="mb-4">Land Management</h2>
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs mb-4" id="landManagementTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button" role="tab">Register Land</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="list-tab" data-bs-toggle="tab" data-bs-target="#list" type="button" role="tab">List Lands</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="documents-tab" data-bs-toggle="tab" data-bs-target="#documents" type="button" role="tab">Manage Documents</button>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="landManagementTabsContent">
+
+          <!-- Register Land Tab -->
+          <div class="tab-pane fade show active" id="register" role="tabpanel" aria-labelledby="register-tab">
+            <div class="card module-card">
+              <div class="card-header">
+                <h5 class="mb-0">Register New Land</h5>
+              </div>
+              <div class="card-body">
+                <form id="registerLandForm">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label class="form-label">Survey Number</label>
+                        <input type="text" class="form-control" name="surveyNumber" required="" fdprocessedid="6lo0u">
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Owner Wallet Address</label>
+                        <input type="text" class="form-control" name="ownerWallet" required="" fdprocessedid="5drvz">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label class="form-label">Location</label>
+                        <input type="text" class="form-control" name="location" required="" fdprocessedid="7u3qsq">
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Area (sq. meters)</label>
+                        <input type="number" class="form-control" name="area" required="" fdprocessedid="lsazp">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label class="form-label">Property Type</label>
+                        <input type="text" class="form-control" name="propertyType" required="" fdprocessedid="32nfrc">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label class="form-label">Market Value</label>
+                        <input type="number" class="form-control" name="marketValue" required="" fdprocessedid="v2k46e">
+                      </div>
+                    </div> <!-- Added missing closing div for this column -->
+                  </div> <!-- Close row div -->
+                  <button type="submit" class="btn btn-primary" fdprocessedid="sjcz1">
+                    <i class="fas fa-save"></i> Register Land
+                  </button>
+                  <div class="response-area mt-3" id="registerLandResponse"></div>
+                </form> <!-- Moved form closing tag here -->
+              </div> <!-- Close card-body -->
+            </div> <!-- Close card -->
+          </div> <!-- Close tab-pane -->
+
+          <!-- List Lands Tab -->
+          <div class="tab-pane fade" id="list" role="tabpanel" aria-labelledby="list-tab">
+            <div class="card module-card">
+              <div class="card-header">
+                <h5 class="mb-0">Filter Lands</h5>
+              </div>
+              <div class="card-body">
+                <form id="listLandsForm">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="mb-3">
+                        <label class="form-label">Owner Wallet (optional)</label>
+                        <input type="text" class="form-control" name="owner">
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="mb-3">
+                        <label class="form-label">Location (optional)</label>
+                        <input type="text" class="form-control" name="location">
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="mb-3">
+                        <label class="form-label">Status (optional)</label>
+                        <select class="form-select" name="status">
+                          <option value="">All</option>
+                          <option value="REGISTERED">Registered</option>
+                          <option value="TRANSFER_PENDING">Transfer Pending</option>
+                          <option value="DISPUTED">Disputed</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-filter"></i> Filter Lands
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <div class="card module-card mt-4">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Land Parcels</h5>
+                <small id="landCount">Showing 1–10 of 1245 lands</small>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Survey #</th>
+                        <th>Owner</th>
+                        <th>Location</th>
+                        <th>Area</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="landTableBody">
+                      <tr>
+                        <td>L-2023-4567</td>
+                        <td>0x3F...2D4E</td>
+                        <td>District 12</td>
+                        <td>1,250 m²</td>
+                        <td><span class="badge bg-success">Registered</span></td>
+                        <td><button class="btn btn-sm btn-outline-primary">View</button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Pagination -->
+                <nav aria-label="Land pagination">
+                  <ul class="pagination justify-content-center">
+                    <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <!-- Manage Documents Tab -->
+          <div class="tab-pane fade" id="documents" role="tabpanel">
+            <div class="card module-card">
+              <div class="card-header">
+                <h5 class="mb-0">Upload/Update Land Documents</h5>
+              </div>
+              <div class="card-body">
+                <form id="updateDocumentsForm">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label class="form-label">Survey Number</label>
+                        <input type="text" class="form-control" name="surveyNumber" required>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Document Type</label>
+                        <select class="form-select" name="documentType" required>
+                          <option value="DEED">Deed</option>
+                          <option value="SURVEY">Survey</option>
+                          <option value="TAX_RECEIPT">Tax Receipt</option>
+                          <option value="OTHER">Other</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label class="form-label">Document File</label>
+                        <input type="file" class="form-control" name="documentFile" required>
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-upload"></i> Upload Document
+                  </button>
+                </form>
+                <div class="response-area mt-3" id="updateDocumentsResponse"></div>
+              </div>
+            </div>
+            <div class="card module-card mt-4">
+              <div class="card-header">
+                <h5 class="mb-0">Document List</h5>
+              </div>
+              <!-- Document list content goes here -->
+              <div class="card-body">
+                <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Document ID</th>
+                        <th>Survey #</th>
+                        <th>Type</th>
+                        <th>Upload Date</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>DOC-2023-001</td>
+                        <td>L-2023-4567</td>
+                        <td>Deed</td>
+                        <td>2023-06-15</td>
+                        <td>
+                          <button class="btn btn-sm btn-outline-primary">View</button>
+                          <button class="btn btn-sm btn-outline-danger">Delete</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Pagination -->
+                <nav aria-label="Document pagination">
+                  <ul class="pagination justify-content-center">
+                    <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer bg-light">
+    <div class="container text-center">
+      <span class="text-muted">© <span id="currentYear"></span> OpenAcres. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="../js/app.js"></script>
+  <script type="module" src="../js/land-management.js"></script>
+
+  <!-- Load Sidebar -->
+  <script>
+    fetch('sidebar.html')
+      .then(res => res.text())
+      .then(html => document.getElementById('sidebar-container').innerHTML = html)
+      .catch(err => console.error('Sidebar load failed:', err));
+  </script>
+</body>
+</html>
+
+
