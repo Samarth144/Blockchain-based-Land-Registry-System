@@ -16,8 +16,7 @@ async function loadOpenAcresABI() {
 
 loadOpenAcresABI();
 
-const CONTRACT_ADDRESS_LOCAL = "0x7c7dDc679a6763d6502F40735276E4755ba81Ed"; // Deployed contract address on Amoy testnet
-
+const CONTRACT_ADDRESS_LOCAL = "0x1244DA4E517328cad81Ef8a1BfAf67690952C94e"; // Deployed contract address on Amoy testnet
 let provider;
 let signer;
 let openAcresContract;

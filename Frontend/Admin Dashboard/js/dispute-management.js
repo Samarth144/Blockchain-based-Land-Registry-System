@@ -19,47 +19,67 @@ function showAlert(message, type) {
     loadResolvedDisputes();
     
     // Form submission handlers
-    document.getElementById('flagDisputeForm')?.addEventListener('submit', function(e) {
+    document.getElementById('flagDisputeForm')?.addEventListener('submit', async function(e) {
         e.preventDefault();
         const formData = new FormData(this);
         
-        const disputeData = {
-            surveyNumber: formData.get('surveyNumber'),
-            reporterWallet: formData.get('reporterWallet'),
-            caseReferenceNumber: formData.get('caseReferenceNumber'),
-            reason: formData.get('reason'),
-            supportingDocuments: [] // Assuming no documents are uploaded via this form for now
-        };
+        const surveyNumber = formData.get('surveyNumber');
+        const reporterWallet = formData.get('reporterWallet');
+        const caseReferenceNumber = formData.get('caseReferenceNumber');
+        const reason = formData.get('reason');
 
-        fetch('http://localhost:8000/api/disputes/flag', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(disputeData)
-        })
-        .then(response => {
+        try {
+            // Fetch land_cases_100.json
+            const response = await fetch('../../../../land_cases_100.json'); // Corrected path
             if (!response.ok) {
-                return response.json().then(err => {
-                    throw new Error(err.message || 'Failed to flag dispute');
-                });
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-            return response.json();
-        })
-        .then(data => {
-            showAlert('Dispute flagged successfully!', 'success');
-            document.getElementById('flagDisputeResponse').textContent =
-                'Dispute flagged successfully!\n\n' +
-                JSON.stringify(data, null, 2);
-            loadActiveDisputes();
-            this.reset();
-        })
-        .catch(error => {
+            const landCases = await response.json();
+
+            // Check if the surveyNumber exists in the JSON file
+            const foundCase = landCases.find(landCase => landCase.surveyNumber === surveyNumber);
+
+            if (foundCase) {
+                // If found, proceed with flagging the dispute
+                const disputeData = {
+                    surveyNumber: surveyNumber,
+                    reporterWallet: reporterWallet,
+                    caseReferenceNumber: caseReferenceNumber,
+                    reason: reason,
+                    supportingDocuments: [] // Assuming no documents are uploaded via this form for now
+                };
+
+                const flagResponse = await fetch('http://localhost:8000/api/disputes/flag', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(disputeData)
+                });
+
+                if (!flagResponse.ok) {
+                    const err = await flagResponse.json();
+                    throw new Error(err.message || 'Failed to flag dispute');
+                }
+                const data = await flagResponse.json();
+                showAlert('Dispute flagged successfully!', 'success');
+                document.getElementById('flagDisputeResponse').textContent =
+                    'Dispute flagged successfully!\n\n' +
+                    JSON.stringify(data, null, 2);
+                loadActiveDisputes();
+                this.reset();
+            } else {
+                // If not found, show a message
+                showAlert('Land is not disputed according to records.', 'info');
+                document.getElementById('flagDisputeResponse').textContent =
+                    'Land with Survey Number ' + surveyNumber + ' is not found in disputed records.';
+            }
+        } catch (error) {
             console.error('Error flagging dispute:', error);
             showAlert('Error flagging dispute: ' + error.message, 'danger');
             document.getElementById('flagDisputeResponse').textContent =
                 'Error flagging dispute: ' + error.message;
-        });
+        }
     });
     
     document.getElementById('unflagDisputeForm')?.addEventListener('submit', function(e) {

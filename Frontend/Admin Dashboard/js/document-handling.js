@@ -1,237 +1,249 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize disputes tables
-    loadActiveDisputes();
-    loadResolvedDisputes();
-    
-    // Form submission handlers
-    document.getElementById('flagDisputeForm')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        
-        // Simulate API call
-        showAlert('Dispute flagged successfully!', 'success');
-        setTimeout(() => {
-            document.getElementById('flagDisputeResponse').textContent = 
-                'Dispute flagged successfully!\n\n' + 
-                JSON.stringify(Object.fromEntries(formData), null, 2);
+    const uploadForm = document.getElementById('uploadDocumentForm');
+    const uploadResponse = document.getElementById('uploadDocumentResponse');
+    const documentTableBody = document.getElementById('documentTableBody');
+    const filterBtn = document.getElementById('filterBtn');
+
+    // Load documents from the server on page load
+    if (document.getElementById('manage-tab')) {
+        fetchDocuments();
+    }
+
+    if (uploadForm) {
+        uploadForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
             
-            // Refresh the disputes tables
-            loadActiveDisputes();
-            this.reset();
-        }, 1000);
-    });
-    
-    document.getElementById('unflagDisputeForm')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        
-        // Simulate API call
-        showAlert('Dispute resolved successfully!', 'success');
-        setTimeout(() => {
-            document.getElementById('unflagDisputeResponse').textContent = 
-                'Dispute resolved successfully!\n\n' + 
-                JSON.stringify(Object.fromEntries(formData), null, 2);
+            // Get form elements
+            const documentType = uploadForm.elements.documentType.value;
+            const surveyNumber = uploadForm.elements.surveyNumber.value;
+            const walletAddress = uploadForm.elements.walletAddress.value;
+            const fileInput = uploadForm.elements.file;
+            const file = fileInput.files[0];
             
-            // Refresh the disputes tables
-            loadActiveDisputes();
-            loadResolvedDisputes();
-            this.reset();
-        }, 1000);
-    });
-    
-    // View dispute details button handler
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('view-dispute-btn')) {
-            const disputeId = e.target.getAttribute('data-id');
-            viewDisputeDetails(disputeId);
+            // Validate inputs
+            const validationResult = validateInputs(documentType, surveyNumber, walletAddress, file);
+            if (!validationResult.valid) {
+                showUploadResponse(validationResult.message, 'error');
+                return;
+            }
+            
+            showUploadResponse('Uploading document...', 'info');
+            
+            try {
+                // Create FormData for the entire document
+                const formData = new FormData();
+                formData.append('documentType', documentType);
+                formData.append('surveyNumber', surveyNumber);
+                formData.append('walletAddress', walletAddress);
+                formData.append('file', file);
+
+                // Single API call to handle both IPFS upload and metadata storage
+                const response = await fetch('http://localhost:8000/api/documents/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await processResponse(response);
+                if (result.success) {
+                    showUploadResponse(`Document uploaded successfully! CID: ${result.data.cid}`, 'success');
+                    uploadForm.reset();
+                    
+                    // Refresh documents table if we're on manage tab
+                    if (document.getElementById('manage-tab')) {
+                        fetchDocuments();
+                    }
+                } else {
+                    showUploadResponse(`Error: ${result.message}`, 'error');
+                }
+            } catch (error) {
+                showUploadResponse(`Network error: ${error.message}`, 'error');
+            }
+        });
+    }
+
+    if (filterBtn) {
+        filterBtn.addEventListener('click', function() {
+            fetchDocuments();
+        });
+    }
+
+    async function fetchDocuments() {
+        const filterType = document.getElementById('filterType').value;
+        const surveyNumberFilter = document.getElementById('filterSurveyNumberInput').value;
+        const uploadDateFilter = document.getElementById('filterUploadDateInput').value;
+        const walletAddressFilter = document.getElementById('filterWalletAddressInput').value;
+
+        try {
+            const params = new URLSearchParams();
+            if (filterType) params.append('documentType', filterType);
+            if (surveyNumberFilter) params.append('surveyNumber', surveyNumberFilter);
+            if (uploadDateFilter) params.append('uploadDate', uploadDateFilter);
+            if (walletAddressFilter) params.append('walletAddress', walletAddressFilter);
+
+            const response = await fetch(`http://localhost:8000/api/documents?${params.toString()}`);
+            if (response.ok) {
+                let documents = await response.json();
+                renderDocuments(documents);
+                
+                // Update document count
+                const documentCount = document.getElementById('documentCount');
+                if (documentCount) {
+                    documentCount.textContent = `Showing ${documents.length} documents`;
+                }
+            } else {
+                console.error('Failed to fetch documents');
+                documentTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Failed to load documents</td></tr>';
+            }
+        } catch (error) {
+            console.error('Error fetching documents:', error);
+            documentTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Network error loading documents</td></tr>';
         }
-    });
+    }
+
+    function renderDocuments(documents) {
+        documentTableBody.innerHTML = '';
+        if (documents.length === 0) {
+            documentTableBody.innerHTML = '<tr><td colspan="6" class="text-center">No documents found.</td></tr>';
+            return;
+        }
+
+        documents.forEach(doc => {
+            // Format file size for display
+            const fileSizeKB = Math.round(doc.fileSize / 1024);
+            const fileSizeDisplay = fileSizeKB > 1024 ? 
+                `${(fileSizeKB / 1024).toFixed(1)} MB` : 
+                `${fileSizeKB} KB`;
+                
+            // Format date for display
+            const uploadDate = new Date(doc.uploadDate);
+            const formattedDate = uploadDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            }) + ' ' + uploadDate.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            const row = `
+                <tr>
+                    <td>${doc.id.substring(0, 8)}...</td>
+                    <td>${doc.documentType}</td>
+                    <td>${doc.surveyNumber}</td>
+                    <td>${formattedDate}</td>
+                    <td>${fileSizeDisplay}</td>
+                    <td>
+                        <a href="${doc.ipfsUrl}" target="_blank" class="btn btn-sm btn-primary me-1">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                        <button class="btn btn-sm btn-danger" onclick="deleteDocument('${doc.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            documentTableBody.innerHTML += row;
+        });
+    }
+
+    window.deleteDocument = async function(docId) {
+        if (!confirm('Are you sure you want to delete this document? This will remove the metadata but the IPFS file will remain.')) return;
+        
+        try {
+            const response = await fetch(`http://localhost:8000/api/documents/${encodeURIComponent(docId)}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                showUploadResponse('Document deleted successfully', 'success');
+                fetchDocuments();
+            } else {
+                const errorText = await response.text();
+                showUploadResponse(`Delete failed: ${errorText}`, 'error');
+            }
+        } catch (error) {
+            showUploadResponse(`Network error: ${error.message}`, 'error');
+        }
+    }
+    
+    function showUploadResponse(message, type) {
+        uploadResponse.innerHTML = `
+            <div class="alert alert-${type === 'error' ? 'danger' : 
+                              type === 'info' ? 'info' : 'success'}">
+                ${message}
+            </div>
+        `;
+    }
+    
+    function validateInputs(documentType, surveyNumber, walletAddress, file) {
+        // Validate Ethereum address
+        if (!/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
+            return {
+                valid: false,
+                message: 'Invalid Ethereum wallet address format'
+            };
+        }
+        
+        // Validate required fields
+        if (!documentType || !surveyNumber || !walletAddress || !file) {
+            return {
+                valid: false,
+                message: 'All fields are required'
+            };
+        }
+        
+        // Validate file size (max 5MB)
+        const fileSizeMB = file.size / (1024 * 1024);
+        if (fileSizeMB > 5) {
+            return {
+                valid: false,
+                message: `File size (${fileSizeMB.toFixed(2)}MB) exceeds 5MB limit`
+            };
+        }
+        
+        // Validate file type
+        const validExtensions = ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'];
+        const fileExtension = file.name.split('.').pop().toLowerCase();
+        if (!validExtensions.includes(fileExtension)) {
+            return {
+                valid: false,
+                message: `Unsupported file type: ${fileExtension}`
+            };
+        }
+        
+        return { valid: true };
+    }
+
+    async function processResponse(response) {
+        try {
+            if (response.status === 204) { // No content
+                return { success: false, message: 'Operation succeeded but no content returned' };
+            }
+            
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const data = await response.json();
+                if (response.ok) {
+                    return { success: true, data };
+                } else {
+                    return { 
+                        success: false, 
+                        message: data.message || data.error || 'Unknown error occurred' 
+                    };
+                }
+            } else {
+                const text = await response.text();
+                if (response.ok) {
+                    return { success: true, data: { message: text } };
+                } else {
+                    return { success: false, message: text };
+                }
+            }
+        } catch (e) {
+            return { 
+                success: false, 
+                message: 'Failed to parse response: ' + e.message
+            };
+        }
+    }
 });
-
-function loadActiveDisputes(page = 1, pageSize = 10) {
-    // Simulate API response
-    const activeDisputes = Array.from({length: pageSize}, (_, i) => ({
-        id: `D-${new Date().getFullYear()}-${100 + i + (page-1)*pageSize}`,
-        surveyNumber: `L-${Math.floor(Math.random() * 1000) + 1000}`,
-        reporter: `0x${Math.random().toString(16).substr(2, 8)}...${Math.random().toString(16).substr(2, 4)}`,
-        reportedDate: new Date(Date.now() - Math.floor(Math.random() * 1000*60*60*24*30)).toISOString(),
-        status: ['Under Review', 'In Mediation', 'In Court'][Math.floor(Math.random() * 3)],
-        caseReference: `CR-${Math.floor(Math.random() * 10000)}`
-    }));
-    
-    // Update UI
-    const tableBody = document.getElementById('activeDisputeTableBody');
-    if (tableBody) {
-        tableBody.innerHTML = activeDisputes.map(dispute => `
-            <tr>
-                <td>${dispute.id}</td>
-                <td>${dispute.surveyNumber}</td>
-                <td>${dispute.reporter}</td>
-                <td>${formatDate(dispute.reportedDate)}</td>
-                <td><span class="badge bg-${dispute.status === 'Under Review' ? 'warning' : dispute.status === 'In Mediation' ? 'info' : 'danger'}">${dispute.status}</span></td>
-                <td>
-                    <button class="btn btn-sm btn-outline-primary view-dispute-btn" data-id="${dispute.id}">
-                        <i class="fas fa-eye"></i> View
-                    </button>
-                </td>
-            </tr>
-        `).join('');
-        
-        document.getElementById('activeDisputeCount').textContent = 
-            `${activeDisputes.length} active disputes`;
-        
-        // Update pagination
-        const paginationElement = document.querySelector('#activeDisputesPagination');
-        if (paginationElement) {
-            updatePagination(paginationElement, page, 5, (newPage) => {
-                loadActiveDisputes(newPage, pageSize);
-            });
-        }
-    }
-}
-
-function loadResolvedDisputes(page = 1, pageSize = 10) {
-    // Simulate API response
-    const resolvedDisputes = Array.from({length: pageSize}, (_, i) => ({
-        id: `D-${new Date().getFullYear()-1}-${100 + i + (page-1)*pageSize}`,
-        surveyNumber: `L-${Math.floor(Math.random() * 1000) + 1000}`,
-        resolution: ['Settled', 'Withdrawn', 'Court Decision'][Math.floor(Math.random() * 3)],
-        resolvedDate: new Date(Date.now() - Math.floor(Math.random() * 1000*60*60*24*365)).toISOString(),
-        caseReference: `CR-${Math.floor(Math.random() * 10000)}`
-    }));
-    
-    // Update UI
-    const tableBody = document.getElementById('resolvedDisputeTableBody');
-    if (tableBody) {
-        tableBody.innerHTML = resolvedDisputes.map(dispute => `
-            <tr>
-                <td>${dispute.id}</td>
-                <td>${dispute.surveyNumber}</td>
-                <td><span class="badge bg-${dispute.resolution === 'Settled' ? 'success' : dispute.resolution === 'Withdrawn' ? 'info' : 'primary'}">${dispute.resolution}</span></td>
-                <td>${formatDate(dispute.resolvedDate)}</td>
-                <td>
-                    <button class="btn btn-sm btn-outline-primary view-dispute-btn" data-id="${dispute.id}">
-                        <i class="fas fa-eye"></i> View
-                    </button>
-                </td>
-            </tr>
-        `).join('');
-        
-        document.getElementById('resolvedDisputeCount').textContent = 
-            `${resolvedDisputes.length} resolved disputes`;
-        
-        // Update pagination
-        const paginationElement = document.querySelector('#resolvedDisputesPagination');
-        if (paginationElement) {
-            updatePagination(paginationElement, page, 5, (newPage) => {
-                loadResolvedDisputes(newPage, pageSize);
-            });
-        }
-    }
-}
-
-function viewDisputeDetails(disputeId) {
-    // Simulate API call to get dispute details
-    const disputeDetails = {
-        id: disputeId,
-        surveyNumber: `L-${Math.floor(Math.random() * 1000) + 1000}`,
-        reporter: `0x${Math.random().toString(16).substr(2, 8)}...${Math.random().toString(16).substr(2, 4)}`,
-        reportedDate: new Date(Date.now() - Math.floor(Math.random() * 1000*60*60*24*30)).toISOString(),
-        resolvedDate: new Date(Date.now() - Math.floor(Math.random() * 1000*60*60*24*7)).toISOString(),
-        status: disputeId.startsWith('D-'+new Date().getFullYear()) ? 
-            ['Under Review', 'In Mediation', 'In Court'][Math.floor(Math.random() * 3)] : 
-            ['Settled', 'Withdrawn', 'Court Decision'][Math.floor(Math.random() * 3)],
-        caseReference: `CR-${Math.floor(Math.random() * 10000)}`,
-        reason: ['Boundary dispute', 'Ownership claim', 'Fraud allegation', 'Inheritance conflict'][Math.floor(Math.random() * 4)],
-        documents: [
-            { name: 'Complaint Form', date: new Date(Date.now() - Math.floor(Math.random() * 1000*60*60*24*30)).toISOString() },
-            { name: 'Supporting Evidence', date: new Date(Date.now() - Math.floor(Math.random() * 1000*60*60*24*28)).toISOString() }
-        ],
-        resolution: disputeId.startsWith('D-'+new Date().getFullYear()) ? null : 
-            ['Mutual agreement', 'Withdrawal of complaint', 'Court ruling in favor of plaintiff', 'Court ruling in favor of defendant'][Math.floor(Math.random() * 4)],
-        notes: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris. Vivamus hendrerit arcu sed erat molestie vehicula.'
-    };
-    
-    // Show modal with dispute details
-    const modal = new bootstrap.Modal(document.getElementById('disputeDetailsModal'));
-    const modalBody = document.getElementById('disputeDetailsContent');
-    
-    modalBody.innerHTML = `
-        <div class="row">
-            <div class="col-md-6">
-                <h5>Dispute Information</h5>
-                <ul class="list-group list-group-flush mb-3">
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>Case ID:</span>
-                        <strong>${disputeDetails.id}</strong>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>Survey Number:</span>
-                        <strong>${disputeDetails.surveyNumber}</strong>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>Status:</span>
-                        <span class="badge bg-${disputeDetails.status === 'Under Review' ? 'warning' : 
-                            disputeDetails.status === 'In Mediation' ? 'info' : 
-                            disputeDetails.status === 'In Court' ? 'danger' : 
-                            disputeDetails.resolution === 'Settled' ? 'success' : 
-                            disputeDetails.resolution === 'Withdrawn' ? 'info' : 'primary'}">
-                            ${disputeDetails.status || disputeDetails.resolution}
-                        </span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>Reported Date:</span>
-                        <strong>${formatDateTime(disputeDetails.reportedDate)}</strong>
-                    </li>
-                    ${disputeDetails.resolvedDate ? `
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>Resolved Date:</span>
-                        <strong>${formatDateTime(disputeDetails.resolvedDate)}</strong>
-                    </li>
-                    ` : ''}
-                </ul>
-            </div>
-            <div class="col-md-6">
-                <h5>Case Details</h5>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>Case Reference:</span>
-                        <strong>${disputeDetails.caseReference}</strong>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>Reporter:</span>
-                        <strong>${disputeDetails.reporter}</strong>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>Dispute Reason:</span>
-                        <strong>${disputeDetails.reason}</strong>
-                    </li>
-                    ${disputeDetails.resolution ? `
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>Resolution:</span>
-                        <strong>${disputeDetails.resolution}</strong>
-                    </li>
-                    ` : ''}
-                </ul>
-            </div>
-        </div>
-        <div class="mt-3">
-            <h5>Case Notes</h5>
-            <div class="card card-body bg-light">
-                ${disputeDetails.notes}
-            </div>
-        </div>
-        <div class="mt-3">
-            <h5>Case Documents</h5>
-            <div class="list-group">
-                ${disputeDetails.documents.map(doc => `
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="fas fa-file-alt me-2"></i> ${doc.name} (uploaded ${formatDate(doc.date)})
-                    </a>
-                `).join('')}
-            </div>
-        </div>
-    `;
-    
-    modal.show();
-}

@@ -2,7 +2,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { JsonRpcProvider, Wallet, Contract } from "ethers";
+import { JsonRpcProvider, Wallet, Contract, getAddress } from "ethers";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -161,7 +161,11 @@ async function grantAuthorityRole(recipientAddress) {
 
   const AUTHORITY_ROLE = await contract.AUTHORITY_ROLE();
   console.log(`Granting AUTHORITY_ROLE to ${recipientAddress}...`);
-  const tx = await contract.grantRole(AUTHORITY_ROLE, recipientAddress);
+  
+  // Ensure the address is a valid checksum address to prevent ENS resolution attempts
+  const validatedRecipientAddress = getAddress(recipientAddress);
+
+  const tx = await contract.grantRole(AUTHORITY_ROLE, validatedRecipientAddress);
   await tx.wait();
   console.log(`AUTHORITY_ROLE granted to ${recipientAddress} successfully!`);
 }

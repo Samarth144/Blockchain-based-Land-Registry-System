@@ -31,6 +31,7 @@
         </ul>
 
         <div class="tab-content" id="documentTabsContent">
+          
           <!-- Upload Tab -->
           <div class="tab-pane fade show active" id="upload" role="tabpanel">
             <div class="card module-card">
@@ -38,7 +39,7 @@
                 <h5 class="mb-0">Upload Document</h5>
               </div>
               <div class="card-body">
-                <form id="uploadDocumentForm">
+                <form id="uploadDocumentForm" enctype="multipart/form-data">
                   <div class="row">
                     <div class="col-md-6">
                       <div class="mb-3">
@@ -52,23 +53,28 @@
                         </select>
                       </div>
                       <div class="mb-3">
-                        <label class="form-label">Related Survey Number</label>
-                        <input type="text" class="form-control" name="surveyNumber">
+                        <label class="form-label">Survey Number</label>
+                        <input type="text" class="form-control" name="surveyNumber" required>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="mb-3">
-                        <label class="form-label">Description</label>
-                        <input type="text" class="form-control" name="description" required>
+                        <label class="form-label">Owner Wallet Address</label>
+                        <input type="text" class="form-control" name="walletAddress" 
+                              pattern="^0x[a-fA-F0-9]{40}$" required
+                              placeholder="0x...">
+                        <div class="form-text">Must be a valid Ethereum address</div>
                       </div>
                       <div class="mb-3">
                         <label class="form-label">Document File</label>
-                        <input type="file" class="form-control" name="documentFile" required>
+                        <input type="file" class="form-control" name="file" required
+                              accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+                        <div class="form-text">Max size: 5MB, Accepted: PDF, JPG, PNG, DOC</div>
                       </div>
                     </div>
                   </div>
                   <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-upload"></i> Upload to IPFS/Firebase
+                    <i class="fas fa-upload"></i> Upload to IPFS
                   </button>
                 </form>
                 <div class="response-area mt-3" id="uploadDocumentResponse"></div>
@@ -76,7 +82,7 @@
             </div>
           </div>
 
-          <!-- Manage Tab -->
+          <!-- Manage Tab --></mcfile>
           <div class="tab-pane fade" id="manage" role="tabpanel">
             <div class="card module-card">
               <div class="card-header d-flex justify-content-between align-items-center">
@@ -84,22 +90,35 @@
                 <small id="documentCount">Showing 1–10 of 1,245 documents</small>
               </div>
               <div class="card-body">
-                <div class="row mb-3">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control" placeholder="Search documents..." id="searchInput">
+                <div class="row mb-3 align-items-end">
+                  <div class="col-md-3">
+                    <label for="filterSurveyNumberInput" class="form-label">Filter by Survey #</label>
+                    <input type="text" class="form-control" id="filterSurveyNumberInput" placeholder="e.g., SN-2025-0178">
                   </div>
                   <div class="col-md-3">
+                    <label for="filterType" class="form-label">Filter by Type</label>
                     <select class="form-select" id="filterType">
                       <option value="">All Types</option>
                       <option value="DEED">Deed</option>
                       <option value="SURVEY">Survey</option>
                       <option value="TAX_RECEIPT">Tax Receipt</option>
                       <option value="IDENTITY_PROOF">Identity Proof</option>
+                      <option value="OTHER">Other</option>
                     </select>
                   </div>
                   <div class="col-md-3">
-                    <button class="btn btn-primary w-100" id="filterBtn">
-                      <i class="fas fa-filter"></i> Filter
+                    <label for="filterUploadDateInput" class="form-label">Filter by Upload Date</label>
+                    <input type="date" class="form-control" id="filterUploadDateInput">
+                  </div>
+                  <div class="col-md-3">
+                    <label for="filterWalletAddressInput" class="form-label">Filter by Wallet Address</label>
+                    <input type="text" class="form-control" id="filterWalletAddressInput" placeholder="e.g., 0x...">
+                  </div>
+                </div>
+                <div class="row mb-3 align-items-end">
+                  <div class="col-md-12 text-end">
+                    <button class="btn btn-primary" id="filterBtn">
+                      <i class="fas fa-filter"></i> Apply Filters
                     </button>
                   </div>
                 </div>
@@ -207,7 +226,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <!-- App Script -->
-  <script src="js/document-handling.js"></script>
+  <script src="../js/document-handling.js"></script>
 
   <!-- Sidebar Loader -->
   <script>

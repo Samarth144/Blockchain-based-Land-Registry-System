@@ -46,6 +46,9 @@ export async function mintLand(req, res) {
       });
     }
 
+    // Explicitly fetch the current nonce for the wallet
+    const currentNonce = await wallet.getTransactionCount();
+
     // ✅ Perform blockchain mint (assuming your contract method is updated to support these fields)
     // Replace below with your actual mint logic
     const tx = await contract.mintLand(
@@ -54,7 +57,8 @@ export async function mintLand(req, res) {
       surveyNumber,
       area,
       propertyType,
-      marketValue
+      marketValue,
+      { nonce: currentNonce } // Pass the fetched nonce to the transaction
     );
     const receipt = await tx.wait();
 
